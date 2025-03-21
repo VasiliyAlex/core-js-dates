@@ -248,8 +248,13 @@ function getNextFridayThe13th(date) {
  * Date(2024, 5, 1) => 2
  * Date(2024, 10, 10) => 4
  */
-function getQuarter(/* date */) {
-  throw new Error('Not implemented');
+function getQuarter(date) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+    throw new Error('Invalid date');
+  }
+
+  const month = date.getMonth();
+  return Math.floor(month / 3) + 1;
 }
 
 /**
