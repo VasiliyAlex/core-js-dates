@@ -275,8 +275,35 @@ function getQuarter(date) {
  * { start: '01-01-2024', end: '15-01-2024' }, 1, 3 => ['01-01-2024', '05-01-2024', '09-01-2024', '13-01-2024']
  * { start: '01-01-2024', end: '10-01-2024' }, 1, 1 => ['01-01-2024', '03-01-2024', '05-01-2024', '07-01-2024', '09-01-2024']
  */
-function getWorkSchedule(/* period, countWorkDays, countOffDays */) {
-  throw new Error('Not implemented');
+function getWorkSchedule(period, countWorkDays, countOffDays) {
+  const startDay = period.start.slice(0, 2);
+  const startMonth = period.start.slice(3, 5);
+  const startYear = period.start.slice(6, 10);
+  const startString = `${startMonth}-${startDay}-${startYear}`;
+  let start = new Date(startString);
+  const endDay = period.end.slice(0, 2);
+  const endMonth = period.end.slice(3, 5);
+  const endYear = period.end.slice(6, 10);
+  const endString = `${endMonth}-${endDay}-${endYear}`;
+  const end = new Date(endString);
+  const msPerDay = 24 * 3600 * 1000;
+  const array = [];
+  while (Date.parse(start) <= Date.parse(end)) {
+    for (let i = 1; i <= countWorkDays; i += 1) {
+      const date = start.getDate();
+      const month = start.getMonth() + 1;
+      const year = start.getFullYear();
+      array.push(
+        `${date.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`
+      );
+      start = new Date(Date.parse(start) + msPerDay);
+      if (Date.parse(start) > Date.parse(end)) {
+        return array;
+      }
+    }
+    start = new Date(Date.parse(start) + msPerDay * countOffDays);
+  }
+  return array;
 }
 
 /**
